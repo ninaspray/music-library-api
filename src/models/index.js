@@ -10,11 +10,11 @@ const setUpDatabase = () => {
         logging: false,
     });
     
-    const Artists = ArtistModel(connection, Sequelize);
+    const Artist = ArtistModel(connection, Sequelize);
     
     connection.sync({ alter: true});
     return {
-        Artists
+        Artist
     };
 };
 
