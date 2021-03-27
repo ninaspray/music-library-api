@@ -20,7 +20,7 @@ exports.getArtistById = (request, response) => {
         response.status(404).json({ error: 'The artist could not be found.' });
       } else {
         response.status(200).json(artist);
-        }
+        }    
     });};
 
   exports.updateArtist = (request, response) => {
