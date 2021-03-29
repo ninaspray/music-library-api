@@ -1,4 +1,4 @@
-const { request } = require('express');
+const { request, response } = require('express');
 const { Album } = require('../models');
 const { Artist } = require('../models');
 const albums = require('../models/albums');
@@ -16,13 +16,7 @@ exports.create = (request, response) => {
 //         console.log(error)
 //         response.status(404).json({ error: "The artist could not be found." })});
 };
-exports.getAlbumById = (request, response) => {
-    Album.findByPk(request.params.albumId)
-         .then(albumDocument => {
-         if (!albumDocument) response.status(404).json({ error: "The album could not be found." });
-         else response.status(201).json(albumDocument);
-        })
-    };
+
 
 exports.getAlbum = (_, response) => {
         Album.findAll()
@@ -31,91 +25,35 @@ exports.getAlbum = (_, response) => {
         .json(albums));
 };
 
-// exports.getAlbum = (request, response) => {
-//     Album.findByPk(request.params.getAlbum)
-//     .then(albumDocument => {
-//         console.log(albumDocument);
-//     if (!albumDocument) response.status(404).json({ error: "The albums could not be found." });
-//     else response.status(201).json(albumDocument);
-//     })
-//     };
 
+exports.getAlbumById = (request, response) => {
+    Album.findByPk(request.params.albumId)
+         .then(albumDocument => {
+         if (!albumDocument) response.status(404).json({ error: "The album could not be found." });
+         else response.status(200).json(albumDocument);
+        })
+    };
+ 
+    
+exports.updateAlbum = (request, response) => {
+    Album.update(request.body, { where: { id: request.params.albumId } })
+    .then(rowsUpdated => {
+     Album.findByPk(request.params.albumId)
+    .then(requestedAlbum => {
+    if(!rowsUpdated[0]){
+            response.status(404).json({ error: "The album could not be found", requestedAlbum })
+          } else {
+            response.status(200).json({ updatedAlbum: requestedAlbum })
+          }
+        })
+    });};
 
-
-
-
-
-
-
-
-// exports.getAlbumByArtistId = (request, response) => {
-//     const { id } = request.params;
-//     artist.findByPk(id)
-//     .then(artist => {
-//     if (!artist) {response.status(404).json({ error: 'The artist could not be found.' });
-//     } else { response.status(200).json(artist);
-//     };});}
-
-
-//       } else {
-//         Album.findAll({ where: { id } }).then(albums => response.status(200)
-//         .json(albums));
-// }
-
-
-
-// exports.getAlbums = (request, response) => {
-//     Album.findAll()
-//         .then(albums => response.status(200)
-//         .json(albums));
-// };
-  
-// exports.getAlbumsbyArtistId = (request, response) => {
-//   const { id } = request.params;
-//    Artist.findByPk(id).then(artist => {
-//    if (!artist) {
-//    response.status(404).json({ error: 'The artist could not be found.' });
-//    } else {
-//      response.status(200).json(artist);
-//         }
-// });};
-
-
-
-//   exports.getAlbums = (request, response) => {
-//     const { id } = request.params;
-//     Artist.findByPk(id).then(artist => {
-//       if (!artist) {
-//         response.status(404).json({ error: 'The artist could not be found.' });
-//       } else {
-//         response.status(200).json(artist);
-//         }
-//     });};
-
-//     exports.list = (request, response) => {
-//         Album.findAll()
-//         .then(albums => {
-//         response.status(200)
-//         .json(albums);
-//         });
-//       };
-
-//     //   exports.updateAlbum = (request, response) => {
-//     //     const { id } = request.params;
-//     //     Artist.update(request.body, { where: { id } }).then(([rowsUpdated]) => {
-//     //       if (id === 0) {
-//     //         response.status(404).json({ error: 'The album could not be found.' });
-//     //       } else {
-//     //         response.status(200).json(rowsUpdated);
-//     //       }
-//     //     });
-//     //   };
-
-
-// exports.updateAlbum = (request, response) => {
-//     const { id } = request.params;
-//     Artist.findByPk(id).then(artist => {
-//       if (!artist) {
-//         response.status(404).json({ error: 'The artist could not be found.' });
-//       } else {
-//         response.status(200).json(artist);
+exports.deleteAlbum = (request, response) => {
+  const { albumId } = request.params;
+  Album.destroy({ where: { id: albumId }})
+  .then(updatedAlbum => {
+  if(!updatedAlbum) {
+  return response.status(404).json({ error: 'The album could not be found' })
+  } else {
+  return response.status(204).json(updatedAlbum);
+  }});};

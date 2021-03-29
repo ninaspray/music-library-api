@@ -68,6 +68,8 @@ describe('/albums', () => {
     });
   });
 
+
+
   describe('Albums in the database', () => {
     let albums;
     beforeEach((done) => {
@@ -100,5 +102,123 @@ describe('/albums', () => {
                   done();
               }).catch(error => done(error));
       });
-  });
-  })});;
+
+      describe('GET /albums/:albumId', () => {
+        it('gets album record by id', (done) => {
+          const album = albums[0];
+          request(app)
+            .get(`/albums/${album.id}`)
+            .then((response) => {
+              expect(response.status).to.equal(200);
+              expect(response.body.name).to.equal(album.name);
+              expect(response.body.year).to.equal(album.year);
+              done();
+            }).catch(error => done(error));
+        });
+        it('returns a 404 if the album does not exist', (done) => {
+          request(app)
+            .get('/albums/12345')
+            .then((response) => {
+              expect(response.status).to.equal(404);
+              expect(response.body.error).to.equal('The album could not be found.');
+              done();
+            }).catch(error => done(error));
+        });
+
+
+        describe('PATCH /albums/:id', () => {
+          it('updates album name by id', (done) => {
+            const album = albums[0]
+             request(app)
+                .patch(`/albums/${album.id}`)
+                .send({ name: "The Slow Rush" })
+                .then(response => {
+                   expect(response.status).to.equal(200)
+                   Album.findByPk(album.id, { raw: true }).then(updatedAlbum => {
+                      expect(updatedAlbum.name).to.equal("The Slow Rush")
+                      done()
+                   }).catch(error => done(error))
+                })
+          })
+  
+          it('updates album year by id', (done) => {
+            const album = albums[0]
+            request(app)
+            .patch(`/albums/${album.id}`)
+            .send({ year: 2011 })
+            .then(response => {
+              expect(response.status).to.equal(200)
+              Album.findByPk(album.id,  { raw: true }).then(updatedAlbum => {
+                expect(updatedAlbum.year).to.equal(2011)
+                done()
+              }).catch(error => done(error))
+            })
+          });
+
+
+          describe('DELETE /albums/:albumId', () => {
+            xit('deletes album record by album id', (done) => {
+                const album = albums[0];
+                request(app)
+                    .delete(`/albums/${album.id}`)
+                    .then((response) => {
+                        expect(response.status).to.equal(204);
+                        Album.findByPk(album.id, { raw: true }).then((updatedAlbum) => {
+                            expect(updatedAlbum).to.equal(null);
+                            done();
+                        }).catch(error => done(error));
+                    }).catch(error => done(error));
+            });
+
+            xit('returns a 404 if the album does not exist', (done) => {
+                request(app)
+                    .delete('/albums/12345')
+                    .then((response) => {
+                        expect(response.status).to.equal(404);
+                        expect(response.body.error).to.equal('The album could not be found.');
+                        done();
+                    }).catch(error => done(error));
+            });
+        });
+
+        // describe('DELETE /albums/:albumId', () => {
+        //   xit('deletes an album by id', (done) => {
+        //     const album = albums[0];
+        //     request(app)
+        //       .delete(`/albums/${album.id}`)
+        //       .then((res) => {
+        //         expect(res.status).to.equal(204);
+        //         Album.findByPk(album.id, { raw: true }).then((deletedAlbum) => {
+        //           expect(deletedAlbum).to.equal(null);
+        //           done();
+        //         });
+        //       });
+        //   });
+    
+        //   xit('returns a 404 if the album does not exist', (done) => {
+        //     request(app)
+        //       .delete('/albums/12345')
+        //       .then((res) => {
+        //         expect(res.status).to.equal(404);
+        //         expect(res.body.error).to.equal('The album could not be found.');
+        //         done();
+        //       });
+        //   });
+          // describe('DELETE /albums/:albumId', () => {
+          //   xit('deletes album record by id', (done) => {
+          //      const album = albums[0]
+          //      request(app)
+          //         .delete(`/albums/${album.id}`)
+          //         .then(response => {
+          //            expect(response.status).to.equal(204)
+          //            Album.findByPk(album.id, { raw: true }).then(deletedAlbum => {
+          //               expect(deletedAlbum).to.equal(null)
+          //               done()
+          //            })
+          //         })
+          //         .catch(error => done(error))
+          //   })
+
+
+      });
+  });});});});
