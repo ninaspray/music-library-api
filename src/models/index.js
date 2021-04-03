@@ -24,7 +24,7 @@ const setUpDatabase = () => {
     return {
         Artist,
         Album, 
-        Song
+        Song,
     };
 };
 

@@ -157,7 +157,7 @@ describe('/albums', () => {
 
 
           describe('DELETE /albums/:albumId', () => {
-            xit('deletes album record by album id', (done) => {
+            it('deletes album record by album id', (done) => {
                 const album = albums[0];
                 request(app)
                     .delete(`/albums/${album.id}`)
@@ -170,12 +170,12 @@ describe('/albums', () => {
                     }).catch(error => done(error));
             });
 
-            xit('returns a 404 if the album does not exist', (done) => {
+            it('returns a 404 if the album does not exist', (done) => {
                 request(app)
                     .delete('/albums/12345')
                     .then((response) => {
                         expect(response.status).to.equal(404);
-                        expect(response.body.error).to.equal('The album could not be found.');
+                        expect(response.body.error).to.equal('The album could not be found');
                         done();
                     }).catch(error => done(error));
             });

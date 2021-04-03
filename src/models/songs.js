@@ -1,10 +1,8 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (connection, DataTypes) => {
     const schema = {
         name : DataTypes.STRING,
     };
 
-    const SongModel = sequelize.define('Song', schema);
-    return Song;
+    const SongModel = connection.define('Song', schema);
+    return SongModel;
 };
-
-

@@ -3,7 +3,9 @@ const app = express ();
 app.use(express.json());
 const artistControllers = require('./controllers/artists');
 const albumControllers = require('./controllers/albums');
+const songControllers = require('./controllers/songs')
 const album = require('./models/albums');
+const { Song } = require('./models');
 
 
 app.get('/test',(req, res) => {
@@ -23,11 +25,10 @@ app.get('/albums', albumControllers.getAlbum);
 app.post('/artists/:artistId/albums', albumControllers.create);
 app.get('/albums/:albumId', albumControllers.getAlbumById);
 app.patch('/albums/:albumId', albumControllers.updateAlbum);
-app.delete('/albums/:albumid', albumControllers.deleteAlbum);
+app.delete('/albums/:albumId', albumControllers.deleteAlbum);
 
-
-// app.get('/artists/:artistId/albums', artistControllers.getAlbumById);
-// app.get('/albums/:albumId', albumControllers.getAlbumById)
+//Songs
+app.post('/album/:albumId/song', songControllers.createSong);
 
 
 
